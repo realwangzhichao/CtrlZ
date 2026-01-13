@@ -87,6 +87,17 @@ namespace z
         }
 
         /**
+         * @brief get data from the buffer
+         *
+         * @param _Index index of the data
+         * @return T data
+         */
+        T at(int _Index) const
+        {
+            return this->Data[(_Index + this->CurrentIndex) % this->Size];
+        }
+
+        /**
          * @brief get the oldest data from the buffer
          *
          * @return T& oldest data reference
@@ -126,6 +137,29 @@ namespace z
             {
                 i = T();
             }
+        }
+
+        /**
+         * @brief operator << for std::ostream
+         *
+         * @param os output stream
+         * @param d ring buffer data
+         * @return std::ostream& output stream
+         */
+        friend std::ostream& operator<<(std::ostream& os, const RingBuffer<T>& d)
+        {
+            os << "buffer<" << typeid(T).name() << "," << d.Size << ">: ";
+            os << "[\n";
+            for (size_t i = 0; i < d.Size; i++)
+            {
+                os << d.at(i);
+                if (i != d.Size - 1)
+                {
+                    os << ", ";
+                }
+            }
+            os << "]\n";
+            return os;
         }
 
     private:

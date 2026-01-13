@@ -1050,6 +1050,26 @@ namespace z
             }
 
             /**
+             * @brief repeat the vector multiple times
+             *
+             * @tparam RepeatN
+             * @return constexpr Vector<T, N* RepeatN>
+             */
+            template<size_t RepeatN>
+            constexpr Vector<T, N* RepeatN> repeat() const
+            {
+                Vector<T, N* RepeatN> result;
+                for (size_t i = 0; i < RepeatN; i++)
+                {
+                    for (size_t j = 0; j < N; j++)
+                    {
+                        result[i * N + j] = this->operator[](j);
+                    }
+                }
+                return result;
+            }
+
+            /**
              * @brief remap the vector with given index
              * @details remap the vector with given index, for example, after remap with index {2,-1,1},
              * the origin vector {3,4,5} should be {5,5,4}
@@ -1838,6 +1858,26 @@ namespace z
                 }
                 return result;
             }
+
+            /**
+             * @brief repeat the vector multiple times
+             *
+             * @tparam RepeatN
+             * @return constexpr Vector<bool, N* RepeatN>
+             */
+            template<size_t RepeatN>
+            constexpr Vector<bool, N* RepeatN> repeat() const
+            {
+                Vector<bool, N* RepeatN> result;
+                for (size_t i = 0; i < RepeatN; i++)
+                {
+                    for (size_t j = 0; j < N; j++)
+                    {
+                        result[i * N + j] = this->operator[](j);
+                    }
+                }
+                return result;
+            }
         };
 
         /**
@@ -1873,7 +1913,5 @@ namespace z
             ((std::copy(vectors.begin(), vectors.end(), result.begin() + offset), offset += Ns), ...);
             return result;
         }
-
-
     };
 };
