@@ -22,6 +22,8 @@
 #include <chrono>
 #include <functional>
 #include <memory>
+#include <set>
+#include <deque>
 
 
 namespace z
@@ -196,6 +198,7 @@ namespace z
 
             this->TimeStamp++;
 
+
             for (auto [taskname, task] : TaskList)
             {
                 task->cnt++;
@@ -213,6 +216,7 @@ namespace z
             this->SyncMutex.unlock();
             this->SyncLock.notify_all();
 
+            this->ProcessTimedCallbacks(); // 处理定时回调函数
             this->run_once(MainThreadTaskBlock);
         }
 
@@ -406,6 +410,26 @@ namespace z
             return true;
         }
 
+        /**
+         * @brief 创建一个一次性回调函数，在指定的延迟步数后被调用。
+         *
+         * @details 该函数用于创建一个一次性回调函数，并在指定的延迟步数后被调用。所有的回调函数将在主线程任务的调度周期中被检查和调用。
+         * 用户可以通过这个函数来注册一些需要在特定时间点一次性执行的任务，需要周期执行的任务请使用Worker来实现。
+         * @param func 回调函数本体，类型为std::function<void(AbstractScheduler::Ptr)>
+         * @param delay_steps 延迟步数，默认为0，表示在下一个调度周期立刻调用。
+         * @return true 创建成功
+         * @return false 创建失败
+         */
+        bool CreateTimedCallback(std::function<void(AbstractScheduler::Ptr)> func, size_t delay_steps = 0)
+        {
+            std::lock_guard<std::mutex> lock(CallbackMutex);
+            CCB ccb;
+            ccb.callbackFunction = func;
+            ccb.callTimeStamp = this->TimeStamp.load() + delay_steps;
+            CallbackList.push_back(ccb);
+            return true;
+        }
+
 
         /**
          * @brief 向任务中添加一个工人
@@ -549,7 +573,21 @@ namespace z
             TCB() : isRunning(false), div(1), Pause(true) {}
         };
 
+        /**
+         * @brief Callback Control Block (clock control block)
+         * @details用于管理一次性回调函数的模块
+         */
+        struct CCB
+        {
+            using FunctionType = std::function<void(AbstractScheduler::Ptr)>;
+            FunctionType callbackFunction;               ///< 回调函数
+            size_t callTimeStamp = 0;        ///< 计划调用的时间戳
+        };
+
     protected:
+        std::mutex CallbackMutex;           ///< 用于管理一次性回调函数的互斥锁
+        std::deque<CCB> CallbackList; ///< 用于管理一次性回调函数的集合
+
         std::atomic<bool> CanSpin = false; //是否可以进行调度
 
         /// @brief main thread id
@@ -623,7 +661,7 @@ namespace z
          */
         void run(const std::string& TaskName)
         {
-            TCB* tcb = TaskName == MainThreadTaskName ? MainThreadTaskBlock : TaskList[TaskName];
+            TCB* tcb = TaskList[TaskName];
             tcb->cnt = 0;
             for (auto worker : tcb->workers)
             {
@@ -672,6 +710,30 @@ namespace z
                 //set to red color
                 std::cout << "\033[31m" << "Scheduler spin dt is not consistent with the set dt, please check your code!" << "\033[0m" << std::endl;
                 std::cout << "Current dt: " << this->HistorySpinDt << ", set dt: " << this->spin_dt << std::endl;
+            }
+        }
+
+        void ProcessTimedCallbacks()
+        {
+            if (this->CallbackList.empty()) [[likely]]
+                return;
+
+            std::lock_guard<std::mutex> lock(CallbackMutex);
+            size_t currentTimeStamp = this->TimeStamp.load();
+            for (auto it = this->CallbackList.begin(); it != this->CallbackList.end(); )
+            {
+                CCB ccb = *it;
+                if (ccb.callTimeStamp <= currentTimeStamp)
+                {
+                    // Call the callback function
+                    ccb.callbackFunction(this->weak_ptr.lock());
+                    // Remove the callback from the list
+                    it = this->CallbackList.erase(it);
+                }
+                else
+                {
+                    ++it;
+                }
             }
         }
 

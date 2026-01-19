@@ -109,6 +109,11 @@ namespace z
             this->started = true;
         }
 
+        void reset()
+        {
+            this->started = false;
+        }
+
         /**
          * @brief 推理前的准备工作,主要是将数据从数据总线中读取出来，并将数据缩放到合适的范围
          * 构造堆叠的输入数据，并准备好输入张量。
