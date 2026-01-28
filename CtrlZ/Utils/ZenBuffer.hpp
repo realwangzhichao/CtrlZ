@@ -42,7 +42,7 @@ namespace z
          * @param _Size size of the buffer
          * @param object initial value
          */
-        RingBuffer(int _Size, T& object)
+        RingBuffer(int _Size, const T& object)
         {
             this->Size = _Size;
             this->Data.reserve(this->Size);
@@ -87,12 +87,12 @@ namespace z
         }
 
         /**
-         * @brief get data from the buffer
+         * @brief get data from the buffer with a copy return
          *
          * @param _Index index of the data
          * @return T data
          */
-        T at(int _Index) const
+        T get(int _Index) const
         {
             return this->Data[(_Index + this->CurrentIndex) % this->Size];
         }
@@ -152,7 +152,7 @@ namespace z
             os << "[\n";
             for (size_t i = 0; i < d.Size; i++)
             {
-                os << d.at(i);
+                os << d.get(i);
                 if (i != d.Size - 1)
                 {
                     os << ", ";

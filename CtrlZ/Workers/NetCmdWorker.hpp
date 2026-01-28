@@ -32,6 +32,7 @@ namespace z
      *        "LowerLimit": [-1.5,-0.3,-0.3], //命令下限
      *        "DiscreteCmdStep": [0.2,0.05,0.05], //离散步长(通常用于键盘控制)
      *        "ReverseJoystickAxis": [false,true,true] //反向轴(通常用于手柄控制)
+     *        "DefaultValue": [0.0, 0.0, 0.0] //默认命令值(可选)
      *      }
      *    }
      * }
@@ -70,6 +71,20 @@ namespace z
             this->CmdLowerLimit = static_cast<decltype(this->CmdLowerLimit)>(local_cfg["LowerLimit"].get<ArrayGetterType>());
             this->CmdDiscreteStep = static_cast<decltype(this->CmdDiscreteStep)>(local_cfg["DiscreteCmdStep"].get<ArrayGetterType>());
             this->CmdReverseAxis = local_cfg["ReverseJoystickAxis"].get<decltype(this->CmdReverseAxis)>();
+
+            if (local_cfg.contains("DefaultValue"))
+            {
+                auto CmdDefaultValue = static_cast<decltype(this->CmdUpperLimit)>(local_cfg["DefaultValue"].get<ArrayGetterType>());
+                this->Scheduler->template SetData<CmdArgs.str>(CmdDefaultValue);
+            }
+            else
+            {
+                //如果没指定,设置为0并按照上下限裁剪
+                z::math::Vector<CmdPrecision, CmdArgs.dim> zero_cmd = z::math::Vector<CmdPrecision, CmdArgs.dim>::zeros();
+                zero_cmd = z::math::Vector<CmdPrecision, CmdArgs.dim>::clamp(zero_cmd, this->CmdLowerLimit, this->CmdUpperLimit);
+                this->Scheduler->template SetData<CmdArgs.str>(zero_cmd);
+                std::cout << "[Warning] No DefaultValue specified for NetCmdWorker, setting to zero command: " << zero_cmd << std::endl;
+            }
 
             this->PrintSplitLine();
             std::cout << "CommanderWorker" << std::endl;
