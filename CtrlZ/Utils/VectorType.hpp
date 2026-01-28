@@ -880,6 +880,224 @@ namespace z
             }
 
             /**
+             * @brief element-wise ReLU activation max(0, x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> relu(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::max(vec[i], static_cast<T>(0));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise leaky ReLU activation
+             * @param vec input vector
+             * @param negative_slope slope for x < 0
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> leaky_relu(const Vector<T, N>& vec, T negative_slope = static_cast<T>(0.01))
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = (vec[i] >= static_cast<T>(0)) ? vec[i] : (negative_slope * vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise sigmoid activation 1 / (1 + exp(-x))
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> sigmoid(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = static_cast<T>(1) / (static_cast<T>(1) + std::exp(-vec[i]));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise tanh activation
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> tanh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::tanh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise softplus activation ln(1 + exp(x))
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> softplus(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::log(static_cast<T>(1) + std::exp(vec[i]));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise ELU activation
+             * @param vec input vector
+             * @param alpha scale for x < 0
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> elu(const Vector<T, N>& vec, T alpha = static_cast<T>(1))
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = (vec[i] >= static_cast<T>(0)) ? vec[i] : (alpha * (std::exp(vec[i]) - static_cast<T>(1)));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise SELU activation
+             * @param vec input vector
+             * @param lambda scale for all x
+             * @param alpha scale for x < 0
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> selu(const Vector<T, N>& vec,
+                T lambda = static_cast<T>(1.0507009873554805),
+                T alpha = static_cast<T>(1.6732632423543772))
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    T v = (vec[i] >= static_cast<T>(0)) ? vec[i] : (alpha * (std::exp(vec[i]) - static_cast<T>(1)));
+                    result[i] = lambda * v;
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise GELU activation (tanh approximation)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> gelu(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                constexpr T k0 = static_cast<T>(0.5);
+                constexpr T k1 = static_cast<T>(0.7978845608028654); // sqrt(2/pi)
+                constexpr T k2 = static_cast<T>(0.044715);
+                for (size_t i = 0; i < N; i++)
+                {
+                    T x = vec[i];
+                    T inner = k1 * (x + k2 * x * x * x);
+                    result[i] = k0 * x * (static_cast<T>(1) + std::tanh(inner));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise Swish activation x * sigmoid(x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> swish(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    T x = vec[i];
+                    result[i] = x / (static_cast<T>(1) + std::exp(-x));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise Mish activation x * tanh(softplus(x))
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> mish(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    T x = vec[i];
+                    result[i] = x * std::tanh(std::log(static_cast<T>(1) + std::exp(x)));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise softsign activation x / (1 + |x|)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> softsign(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    T x = vec[i];
+                    result[i] = x / (static_cast<T>(1) + std::abs(x));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hard sigmoid activation
+             * @param vec input vector
+             * @param slope slope for linear region
+             * @param offset offset for linear region
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> hard_sigmoid(const Vector<T, N>& vec,
+                T slope = static_cast<T>(0.2),
+                T offset = static_cast<T>(0.5))
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::clamp(slope * vec[i] + offset, static_cast<T>(0), static_cast<T>(1));
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hard swish activation x * relu6(x + 3) / 6
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> hard_swish(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    T x = vec[i];
+                    T relu6 = std::clamp(x + static_cast<T>(3), static_cast<T>(0), static_cast<T>(6));
+                    result[i] = x * relu6 / static_cast<T>(6);
+                }
+                return result;
+            }
+
+
+
+            /**
              * @brief get a bool type vector with the same size as this vector
              *
              */
