@@ -77,11 +77,9 @@ namespace z
         class Vector : public std::array<T, N>
         {
             static_assert(std::is_arithmetic<T>::value, "T must be arithmetic type");
-            //using std::array<T, N>::_Elems;
         public:
             /**
              * @brief clamp val to min and max
-             *
              * @param val value to clamp
              * @param min min value
              * @param max max value
@@ -100,7 +98,6 @@ namespace z
 
             /**
              * @brief abs val
-             *
              * @param val value to abs
              * @return Vector<T, N> abs result
              */
@@ -116,7 +113,6 @@ namespace z
 
             /**
              * @brief min val1 and val2
-             *
              * @param val1 value 1
              * @param val2 value 2
              * @return Vector<T, N> min result
@@ -133,7 +129,6 @@ namespace z
 
             /**
              * @brief max val1 and val2
-             *
              * @param val1 value 1
              * @param val2 value 2
              * @return Vector<T, N> max result
@@ -150,7 +145,6 @@ namespace z
 
             /**
              * @brief clamp val to min and max
-             *
              * @param val value to clamp
              * @param min min value
              * @param max max value
@@ -168,7 +162,6 @@ namespace z
 
             /**
              * @brief max val to max
-             *
              * @param val value to max
              * @param max max value
              * @return Vector<T, N> max result
@@ -185,7 +178,6 @@ namespace z
 
             /**
              * @brief min val to min
-             *
              * @param val value to min
              * @param min min value
              * @return Vector<T, N> min result
@@ -354,7 +346,550 @@ namespace z
                 return result;
             }
 
+            /*****math functions******/
+
+            /**
+             * @brief element-wise exponential
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> exp(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::exp(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise natural logarithm
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> log(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::log(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise base-10 logarithm
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> log10(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::log10(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise base-2 logarithm
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> log2(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::log2(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise power (base^exp), vector-vector
+             * @param base base vector
+             * @param exp exponent vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> pow(const Vector<T, N>& base, const Vector<T, N>& exp)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::pow(base[i], exp[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise power (base^exp), vector-scalar
+             * @param base base vector
+             * @param exp exponent scalar
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> pow(const Vector<T, N>& base, T exp)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::pow(base[i], exp);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise square root
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> sqrt(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::sqrt(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise cubic root
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> cbrt(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::cbrt(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise sine (radians)
+             * @param vec input vector (radians)
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> sin(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::sin(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise cosine (radians)
+             * @param vec input vector (radians)
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> cos(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::cos(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise tangent (radians)
+             * @param vec input vector (radians)
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> tan(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::tan(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise arcsine (radians)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> asin(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::asin(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise arccosine (radians)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> acos(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::acos(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise arctangent (radians)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> atan(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::atan(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hyperbolic sine
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> sinh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::sinh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hyperbolic cosine
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> cosh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::cosh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hyperbolic tangent
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> tanh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::tanh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise inverse hyperbolic sine
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> asinh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::asinh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise inverse hyperbolic cosine
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> acosh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::acosh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise inverse hyperbolic tangent
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> atanh(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::atanh(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise 2^x
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> exp2(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::exp2(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise exp(x) - 1
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> expm1(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::expm1(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise log(1 + x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> log1p(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::log1p(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise floor
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> floor(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::floor(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise ceil
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> ceil(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::ceil(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise round to nearest
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> round(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::round(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise truncation toward zero
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> trunc(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::trunc(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise floating-point remainder (x mod y), vector-vector
+             * @param x dividend vector
+             * @param y divisor vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> fmod(const Vector<T, N>& x, const Vector<T, N>& y)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::fmod(x[i], y[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise floating-point remainder (x mod y), vector-scalar
+             * @param x dividend vector
+             * @param y divisor scalar
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> fmod(const Vector<T, N>& x, T y)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::fmod(x[i], y);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise hypot(x, y)
+             * @param x x vector
+             * @param y y vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> hypot(const Vector<T, N>& x, const Vector<T, N>& y)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::hypot(x[i], y[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise atan2(y, x)
+             * @param y y vector
+             * @param x x vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> atan2(const Vector<T, N>& y, const Vector<T, N>& x)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::atan2(y[i], x[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise error function erf(x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> erf(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::erf(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise complementary error function erfc(x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> erfc(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::erfc(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise gamma function Γ(x)
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> tgamma(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::tgamma(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief element-wise log-gamma function ln|Γ(x)|
+             * @param vec input vector
+             * @return Vector<T, N> result vector
+             */
+            static constexpr Vector<T, N> lgamma(const Vector<T, N>& vec)
+            {
+                Vector<T, N> result;
+                for (size_t i = 0; i < N; i++)
+                {
+                    result[i] = std::lgamma(vec[i]);
+                }
+                return result;
+            }
+
+            /**
+             * @brief get a bool type vector with the same size as this vector
+             *
+             */
             using BoolType = Vector<bool, N>;
+
+            /**
+             * @brief get the int type vector with the same size as this vector
+             *
+             */
+            using IntType = Vector<int, N>;
 
         public:
 
@@ -1145,7 +1680,6 @@ namespace z
         template<size_t N>
         class Vector<bool, N> : public std::array<bool, N>
         {
-            //using std::array<T, N>::_Elems;
         public:
             /**
              * @brief create a vector with all elements set to false
@@ -1253,6 +1787,11 @@ namespace z
                 return false;
             }
 
+            /**
+             * @brief get the int type vector with the same size as this vector
+             *
+             */
+            using IntType = Vector<int, N>;
 
 
         public:
