@@ -926,21 +926,6 @@ namespace z
             }
 
             /**
-             * @brief element-wise tanh activation
-             * @param vec input vector
-             * @return Vector<T, N> result vector
-             */
-            static constexpr Vector<T, N> tanh(const Vector<T, N>& vec)
-            {
-                Vector<T, N> result;
-                for (size_t i = 0; i < N; i++)
-                {
-                    result[i] = std::tanh(vec[i]);
-                }
-                return result;
-            }
-
-            /**
              * @brief element-wise softplus activation ln(1 + exp(x))
              * @param vec input vector
              * @return Vector<T, N> result vector
