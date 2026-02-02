@@ -245,6 +245,7 @@ namespace z
 
             // Compute the dot product
             Scalar dot = a_unit.dot(b_unit);
+            dot = std::clamp(dot, static_cast<Scalar>(-1.0), static_cast<Scalar>(1.0));
 
             // If the dot product is negative, negate one quaternion to take the shortest path
             if (dot < 0.0) {
